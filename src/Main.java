@@ -13,9 +13,6 @@ public class Main {
         }
         System.out.println("Введите кол-во проголосовавших для каждой альтенативы:");
         make_alters(mas1, n);
-        /*for(int i = 0; i < vote_list.size(); i++) {
-            System.out.println(vote_list.get(i).alter+" "+vote_list.get(i).voices);
-        }*/
         System.out.println("\n1) Модель относительного большинства");
         int[] sum = new int[n];
         for(int i = 0; i < vote_list.size(); i++) {
@@ -32,8 +29,44 @@ public class Main {
         }
         System.out.println("Выиграл кандидат: "+alphabet.charAt(j));
         System.out.println("\n2) Модель Кондорсе (правило Симпсона)");
-
-
+        ArrayList<Choice> vote_list_k = new ArrayList<>();
+        for(int i = 0; i < n; i++) {
+            for(j = 0; j < n; j++) {
+                if (i != j) {
+                    vote_list_k.add(new Choice(alphabet.charAt(i)+""+alphabet.charAt(j), -1));
+                }
+            }
+        }
+        for(int i = 0; i < vote_list_k.size(); i++) {
+            int voices = 0;
+            for(j = 0; j < vote_list.size(); j++) {
+                if (vote_list.get(j).alter.indexOf(vote_list_k.get(i).alter.charAt(0)) < vote_list.get(j).alter.indexOf(vote_list_k.get(i).alter.charAt(1))) {
+                    voices += vote_list.get(j).voices;
+                }
+            }
+            vote_list_k.get(i).voices = voices;
+            System.out.println("'"+vote_list_k.get(i).alter.charAt(0)+" < "+vote_list_k.get(i).alter.charAt(1)+"' = "+vote_list_k.get(i).voices);
+        }
+        int[] N = new int[n];
+        for(int i = 0; i < n; i++) {
+            int min = 10000;
+            for(j = 0; j < vote_list_k.size(); j++) {
+                if (vote_list_k.get(j).alter.charAt(0) == alphabet.charAt(i) && min > vote_list_k.get(j).voices) {
+                    min = vote_list_k.get(j).voices;
+                }
+            }
+            N[i] = min;;
+        }
+        System.out.println("Оценки Симпсона:");
+        j = -1; max = -1;
+        for(int i = 0; i < N.length; i++) {
+            System.out.println(alphabet.charAt(i)+" = "+N[i]);
+            if (N[i] > max) {
+                max = N[i];
+                j = i;
+            }
+        }
+        System.out.println("Выиграл кандидат: "+alphabet.charAt(j));
         System.out.println("\n3) Модель Борда");
         sum =  new int[n];
         System.out.println("Кол-во голосов:");
